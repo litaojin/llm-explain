@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>文字怎样变成 Token ID？ · LLM Explain</title><style>*{box-sizing:border-box}body{margin:0;background:#fafbf9;color:#20313b;font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif}main{max-width:1440px;margin:auto}.canvas{width:100%;overflow:auto}svg{display:block;width:100%;height:auto;min-width:720px}button,select{font:inherit;min-height:44px;padding:8px 15px;border:1px solid #d5dfd7;border-radius:6px;background:#fff;color:#137765;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #326a91;outline-offset:3px}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 20px;border-top:1px solid #d5dfd7}#seek{flex:1;min-width:140px;min-height:44px;accent-color:#137765}.note{padding:0 20px;margin:5px 0 18px;color:#596b72;font-size:13px;line-height:1.7}.scroll-hint{display:none}@media(max-width:720px){.scroll-hint{display:block;padding:10px 20px;margin:0;font-size:13px;color:#596b72}.controls{gap:8px}.controls label{display:inline-flex;align-items:center;gap:5px;min-height:44px}#seek{flex-basis:100%}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}</style></head><body><main><p class="scroll-hint">小屏可左右滑动图解；下方控件可暂停、拖动与倍速回看。</p><div class="canvas" aria-label="文字怎样变成 Token ID？"><svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="tk-title tk-desc">
+<title id="tk-title">文字怎样变成 Token ID？</title>
+<desc id="tk-desc">教学玩具分词器以最长匹配把我爱北京，我爱北京分为七个片段，然后查教学词表得到17、8、42、3、17、8、42。北京是多字片段。编号不是词义或向量。</desc>
+<defs><marker id="tk-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 2 L10 6 L2 10" fill="none" stroke="#137765" stroke-width="1.8"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK SC","WenQuanYi Zen Hei","Microsoft YaHei",sans-serif;fill:#20313b}.tk-center{text-anchor:middle;dominant-baseline:middle}.tk-muted{fill:#64737c}.tk-green{fill:#137765}.tk-blue{fill:#326a91}.tk-piece{fill:#f0f7f2;stroke:#cad6ce;stroke-width:1.5}.tk-id{fill:#eff4f8;stroke:#bacdda;stroke-width:1.5}</style>
+<rect width="1440" height="860" fill="#fafbf9"/>
+<text x="100" y="78" font-size="35" font-weight="650">文字怎样变成 Token ID？</text>
+<text id="tk-step" x="100" y="124" font-size="22" class="tk-muted">文本 → 片段 → 查词表 → ID</text>
+<rect x="100" y="170" width="1240" height="500" rx="13" fill="white" stroke="#cad6ce" stroke-width="1.5"/>
+<text x="128" y="230" font-size="22" class="tk-muted">原文</text>
+<text id="tk-input" x="310" y="234" font-size="32">我爱北京，我爱北京</text>
+<text x="1110" y="229" font-size="20" class="tk-muted">9 个字符</text>
+<path d="M720 252 V280" fill="none" stroke="#137765" stroke-width="1.7" marker-end="url(#tk-arrow)"/>
+<text x="128" y="333" font-size="22" class="tk-muted">片段</text>
+<g id="tk-piece-0"><rect id="tk-piece-box-0" x="252" y="292" width="116" height="72" rx="10" class="tk-piece"/><text x="310" y="329" font-size="30" class="tk-center">我</text></g>
+<g id="tk-piece-1"><rect id="tk-piece-box-1" x="402" y="292" width="116" height="72" rx="10" class="tk-piece"/><text x="460" y="329" font-size="30" class="tk-center">爱</text></g>
+<g id="tk-piece-2"><rect id="tk-piece-box-2" x="552" y="292" width="116" height="72" rx="10" class="tk-piece"/><text x="610" y="329" font-size="30" class="tk-center">北京</text></g>
+<g id="tk-piece-3"><rect id="tk-piece-box-3" x="702" y="292" width="116" height="72" rx="10" class="tk-piece"/><text x="760" y="329" font-size="30" class="tk-center">，</text></g>
+<g id="tk-piece-4"><rect id="tk-piece-box-4" x="852" y="292" width="116" height="72" rx="10" class="tk-piece"/><text x="910" y="329" font-size="30" class="tk-center">我</text></g>
+<g id="tk-piece-5"><rect id="tk-piece-box-5" x="1002" y="292" width="116" height="72" rx="10" class="tk-piece"/><text x="1060" y="329" font-size="30" class="tk-center">爱</text></g>
+<g id="tk-piece-6"><rect id="tk-piece-box-6" x="1152" y="292" width="116" height="72" rx="10" class="tk-piece"/><text x="1210" y="329" font-size="30" class="tk-center">北京</text></g>
+<text id="tk-piece-note" x="310" y="398" font-size="20" class="tk-green">最长匹配：“北京”作为一个片段</text>
+<g id="tk-vocab">
+<text x="128" y="469" font-size="22" class="tk-muted">词表</text>
+<g><rect id="tk-vocab-box-0" x="252" y="425" width="240" height="76" rx="9" class="tk-piece"/><text id="tk-vocab-text-0" x="372" y="464" font-size="26" class="tk-center">我 → 17</text></g>
+<g><rect id="tk-vocab-box-1" x="510" y="425" width="240" height="76" rx="9" class="tk-piece"/><text id="tk-vocab-text-1" x="630" y="464" font-size="26" class="tk-center">爱 → 8</text></g>
+<g><rect id="tk-vocab-box-2" x="768" y="425" width="240" height="76" rx="9" class="tk-piece"/><text id="tk-vocab-text-2" x="888" y="464" font-size="26" class="tk-center">北京 → 42</text></g>
+<g><rect id="tk-vocab-box-3" x="1026" y="425" width="240" height="76" rx="9" class="tk-piece"/><text id="tk-vocab-text-3" x="1146" y="464" font-size="26" class="tk-center">， → 3</text></g>
+</g>
+<path id="tk-lookup-in" fill="none" stroke="#137765" stroke-width="2" marker-end="url(#tk-arrow)"/>
+<path id="tk-lookup-out" fill="none" stroke="#326a91" stroke-width="2" marker-end="url(#tk-arrow)"/>
+<circle id="tk-signal" r="6" fill="#137765"/>
+<text id="tk-lookup-caption" x="310" y="544" font-size="20" class="tk-blue">按 token 查词表，保持原来顺序</text>
+<text x="128" y="614" font-size="22" class="tk-muted">ID</text>
+<g id="tk-id-0"><rect x="252" y="575" width="116" height="66" rx="9" class="tk-id"/><text id="tk-id-text-0" x="310" y="609" font-size="30" class="tk-center tk-blue">17</text></g>
+<g id="tk-id-1"><rect x="402" y="575" width="116" height="66" rx="9" class="tk-id"/><text id="tk-id-text-1" x="460" y="609" font-size="30" class="tk-center tk-blue">8</text></g>
+<g id="tk-id-2"><rect x="552" y="575" width="116" height="66" rx="9" class="tk-id"/><text id="tk-id-text-2" x="610" y="609" font-size="30" class="tk-center tk-blue">42</text></g>
+<g id="tk-id-3"><rect x="702" y="575" width="116" height="66" rx="9" class="tk-id"/><text id="tk-id-text-3" x="760" y="609" font-size="30" class="tk-center tk-blue">3</text></g>
+<g id="tk-id-4"><rect x="852" y="575" width="116" height="66" rx="9" class="tk-id"/><text id="tk-id-text-4" x="910" y="609" font-size="30" class="tk-center tk-blue">17</text></g>
+<g id="tk-id-5"><rect x="1002" y="575" width="116" height="66" rx="9" class="tk-id"/><text id="tk-id-text-5" x="1060" y="609" font-size="30" class="tk-center tk-blue">8</text></g>
+<g id="tk-id-6"><rect x="1152" y="575" width="116" height="66" rx="9" class="tk-id"/><text id="tk-id-text-6" x="1210" y="609" font-size="30" class="tk-center tk-blue">42</text></g>
+<text id="tk-takeaway" x="100" y="730" font-size="28" class="tk-green">ID 是词表索引，不是词义，也不是向量。</text>
+<text id="tk-summary" x="100" y="774" font-size="22">同一 token 在这张玩具词表里总有同一 ID；7 个片段对应 7 个编号。</text>
+<text x="100" y="810" font-size="17" class="tk-muted">教学玩具分词器/词表，非真实 tokenizer。仅用本词表做贪心最长匹配，未知字符报错。</text>
+<text x="100" y="840" font-size="17" class="tk-muted">真实切分依模型而异；相同字形不保证始终对应同一 token ID。本图不展示嵌入或上下文意义。</text>
+</svg>
+</div><div class="controls" aria-label="播放控制"><button id="play" type="button" aria-pressed="false">播放</button><button id="replay" type="button">重播</button><input id="seek" type="range" min="0" max="16" value="0" step="0.01" aria-label="动画时间"><span id="clock" aria-live="off">0 / 16 秒</span><label>倍速 <select id="speed" aria-label="播放速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div><p class="note">教学玩具分词器/词表，非真实 tokenizer：北京作为一个片段，重复片段查到相同编号。ID 只是索引。　单次播放后停止。<noscript>交互需启用 JavaScript；可打开同目录的 GIF 观看完整过程。</noscript></p></main><script>const LessonConfig={"id":"tokenization-ids","title":"文字怎样变成 Token ID？","width":1440,"height":860,"subtitle":"文本 → 片段 → 查词表 → ID；不是每个字都是一个 token。","duration":16,"caption":"教学玩具分词器/词表，非真实 tokenizer：北京作为一个片段，重复片段查到相同编号。ID 只是索引。","snapshots":[1,4,9,14]};</script><script>(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.LessonModel = factory();
+})(typeof window !== 'undefined' ? window : globalThis, function () {
+  'use strict';
+  const DURATION = 16;
+  const toyVocab = Object.freeze({'我':17,'爱':8,'北京':42,'，':3});
+  function tokenize(input) {
+    const result = [], keys = Object.keys(toyVocab).sort((a,b)=>b.length-a.length);
+    let offset = 0;
+    while (offset < input.length) {
+      const piece = keys.find(k => input.startsWith(k, offset));
+      if (!piece) throw new Error('字符不在教学词表中：' + input.slice(offset));
+      result.push(piece); offset += piece.length;
+    }
+    return result;
+  }
+  function stateAt(t) {
+    const number = Number(t);
+    const time = Math.max(0,Math.min(DURATION,Number.isNaN(number)?0:number));
+    const input = '我爱北京，我爱北京', tokens = tokenize(input);
+    const pieceCount = time < 2 ? 0 : Math.min(7,1+Math.floor((time-2)/0.55+1e-9));
+    const idCount = time < 6.8 ? 0 : Math.min(7,1+Math.floor((time-6.8)/0.8+1e-9));
+    const lookupIndex = time >= 6 && time < 11.6 ? Math.min(6,Math.floor((time-6)/0.8+1e-9)) : -1;
+    const lookupProgress = lookupIndex < 0 ? 0 : Math.max(0,Math.min(1,((time-6)/0.8)-lookupIndex));
+    const stage = time < 2 ? 'text' : time < 6 ? 'pieces' : time < 12 ? 'lookup' : 'summary';
+    const messages = {text:'① 先看原文：文字还没有变成编号。',pieces:'② 按玩具规则切分：“北京”是一个片段，不是两个。',lookup:'③ 每个片段查同一张教学词表，依次取出 ID。',summary:'④ 完成：7 个 token → 7 个 ID；重复 token 的 ID 一致。'};
+    return {time,stage,input,tokens,ids:tokens.map(p=>toyVocab[p]),vocab:{...toyVocab},pieceCount,idCount,lookupIndex,lookupProgress,
+      message:messages[stage],showVocab:time>=6,summary:time>=12,
+      activeToken:lookupIndex<0?null:tokens[lookupIndex],
+      takeaway:time>=12?'ID 是词表索引，不是词义，也不是向量。':'先确定片段边界，再按词表把片段换成编号。'};
+  }
+  return {DURATION,stateAt,tokenize};
+});
+</script><script>'use strict';
+function renderScene(s) {
+  text('tk-step', s.message);
+  text('tk-input', s.input);
+  text('tk-takeaway', s.takeaway);
+  text('tk-summary',s.summary?'同一 token 在这张玩具词表里总有同一 ID；7 个片段对应 7 个编号。':'');
+  opacity('tk-piece-note',s.pieceCount>=3&&s.lookupIndex<0?1:0);
+  opacity('tk-vocab',s.showVocab?1:0);
+  opacity('tk-lookup-caption',s.showVocab&&s.lookupIndex<0?1:0);
+  text('tk-lookup-caption',s.lookupIndex>=0?'正在查：'+s.activeToken+' → '+s.ids[s.lookupIndex]:'按 token 查词表，保持原来顺序');
+  for (let tkI=0;tkI<7;tkI++) {
+    opacity('tk-piece-'+tkI,tkI<s.pieceCount?1:0);
+    opacity('tk-id-'+tkI,tkI<s.idCount?1:0);
+    text('tk-id-text-'+tkI,s.ids[tkI]);
+    $('tk-piece-box-'+tkI).setAttribute('stroke',tkI===s.lookupIndex?'#137765':'#cad6ce');
+    $('tk-piece-box-'+tkI).setAttribute('stroke-width',tkI===s.lookupIndex?'3':'1.5');
+  }
+  const tkKeys=['我','爱','北京','，'];
+  for (let tkI=0;tkI<4;tkI++) {
+    text('tk-vocab-text-'+tkI,tkKeys[tkI]+' → '+s.vocab[tkKeys[tkI]]);
+    $('tk-vocab-box-'+tkI).setAttribute('fill',tkKeys[tkI]===s.activeToken?'#dcefe5':'#f0f7f2');
+    $('tk-vocab-box-'+tkI).setAttribute('stroke',tkKeys[tkI]===s.activeToken?'#137765':'#cad6ce');
+  }
+  const tkActive=s.lookupIndex>=0;
+  opacity('tk-lookup-in',tkActive?1:0); opacity('tk-lookup-out',tkActive?1:0); opacity('tk-signal',tkActive?1:0);
+  if (tkActive) {
+    const tkX=310+s.lookupIndex*150,tkTableX=372+tkKeys.indexOf(s.activeToken)*258;
+    const tkPath=$('tk-lookup-in');
+    tkPath.setAttribute('d','M'+tkX+' 367 C'+tkX+' 408 '+tkTableX+' 384 '+tkTableX+' 419');
+    $('tk-lookup-out').setAttribute('d','M'+tkTableX+' 506 C'+tkTableX+' 550 '+tkX+' 530 '+tkX+' 569');
+    const tkPoint=tkPath.getPointAtLength(tkPath.getTotalLength()*s.lookupProgress);
+    $('tk-signal').setAttribute('cx',tkPoint.x); $('tk-signal').setAttribute('cy',tkPoint.y);
+  } else {
+    $('tk-lookup-in').setAttribute('d',''); $('tk-lookup-out').setAttribute('d','');
+    $('tk-signal').setAttribute('cx','0'); $('tk-signal').setAttribute('cy','0');
+  }
+  return {stage:s.stage,time:s.time,visiblePieces:s.pieceCount,visibleIds:s.idCount,lookupIndex:s.lookupIndex,tokens:s.tokens.slice(),ids:s.ids.slice(),vocabVisible:s.showVocab,summary:s.summary};
+}
+</script><script>const svg=document.querySelector('svg'),$=id=>document.getElementById(id);
+function text(id,value){const e=$(id);if(!e)throw Error('Missing SVG label '+id);e.textContent=String(value)}
+function opacity(id,value){const e=$(id);if(!e)throw Error('Missing SVG group '+id);e.setAttribute('opacity',String(value))}
+let currentTime=0,playing=false,rate=1,raf=0,lastTick=0;
+function boundedTime(t){t=Number(t);return Number.isFinite(t)?Math.max(0,Math.min(LessonModel.DURATION,t)):0}
+function renderFrame(t){currentTime=boundedTime(t);const state=LessonModel.stateAt(currentTime),scene=renderScene(state);$('seek').value=currentTime;$('clock').textContent=currentTime.toFixed(1)+' / '+LessonModel.DURATION+' 秒';window.frameDiagnostics={time:currentTime,model:state,scene};return window.frameDiagnostics}
+function updateControls(){$('play').textContent=playing?'暂停':'播放';$('play').setAttribute('aria-pressed',String(playing))}
+function pause(){playing=false;cancelAnimationFrame(raf);updateControls()}
+function tick(now){if(!playing)return;const elapsed=Math.max(0,(now-lastTick)/1000);lastTick=now;renderFrame(currentTime+elapsed*rate);if(currentTime>=LessonModel.DURATION){pause();return}raf=requestAnimationFrame(tick)}
+function play(){if(currentTime>=LessonModel.DURATION)renderFrame(0);if(playing)return;playing=true;lastTick=performance.now();updateControls();raf=requestAnimationFrame(tick)}
+function seekTo(t){pause();return renderFrame(t)}
+function playerState(){return {playing,current:currentTime,speed:rate,duration:LessonModel.DURATION,stage:window.frameDiagnostics?.model?.stage}}
+function visibleTextBounds(){const r=svg.getBoundingClientRect();return [...svg.querySelectorAll('text')].filter(e=>{for(let n=e;n&&n!==svg.parentNode;n=n.parentElement){const c=getComputedStyle(n);if(c.display==='none'||c.visibility==='hidden'||Number(c.opacity)===0)return false}return !!e.textContent.trim()}).map(e=>{const b=e.getBBox(),m=e.getScreenCTM(),a=new DOMPoint(b.x,b.y).matrixTransform(m),z=new DOMPoint(b.x+b.width,b.y+b.height).matrixTransform(m);return {id:e.id,text:e.textContent,x:a.x-r.x,y:a.y-r.y,width:z.x-a.x,height:z.y-a.y,inside:a.x>=r.x-1&&a.y>=r.y-1&&z.x<=r.right+1&&z.y<=r.bottom+1}})}
+async function exportPNG(t){pause();renderFrame(t);await document.fonts.ready;const clone=svg.cloneNode(true);clone.setAttribute('xmlns','http://www.w3.org/2000/svg');clone.setAttribute('width',String(LessonConfig.width));clone.setAttribute('height',String(LessonConfig.height));const xml=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([xml],{type:'image/svg+xml;charset=utf-8'}));try{const image=new Image();await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=url});const canvas=document.createElement('canvas');canvas.width=LessonConfig.width;canvas.height=LessonConfig.height;const ctx=canvas.getContext('2d');ctx.fillStyle='#fafbf9';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/png')}finally{URL.revokeObjectURL(url)}}
+$('play').onclick=()=>playing?pause():play();$('replay').onclick=()=>{pause();renderFrame(0);play()};$('seek').addEventListener('input',e=>seekTo(e.target.value));$('speed').onchange=e=>{rate=Number(e.target.value)};svg.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();playing?pause():play()}if(e.code==='ArrowRight'){e.preventDefault();seekTo(currentTime+1)}if(e.code==='ArrowLeft'){e.preventDefault();seekTo(currentTime-1)}});document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
+const ready=(async()=>{await document.fonts.ready;renderFrame(0);updateControls();if(!new URLSearchParams(location.search).has('render')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)play();return true})();
+window.ready=ready;window.renderFrame=renderFrame;window.exportPNG=exportPNG;window.seekTo=seekTo;window.playerState=playerState;window.visibleTextBounds=visibleTextBounds;
+</script></body></html>

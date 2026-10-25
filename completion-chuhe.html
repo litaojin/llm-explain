@@ -1,0 +1,78 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Completion：锄禾 → 日当午，汗滴禾下土。</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#fafbf9;color:#20313b;font-family:"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",sans-serif}main{max-width:1600px;margin:35px auto 0}canvas{display:block;width:100%;height:auto}nav{display:flex;align-items:center;gap:12px;max-width:1050px;margin:10px auto;padding:0 22px;flex-wrap:wrap}button{min-height:44px;border:1px solid #b7c9c0;background:white;border-radius:8px;padding:8px 18px;font:inherit;cursor:pointer;color:#175d50}button:focus-visible,input:focus-visible{outline:3px solid #137765;outline-offset:3px}#play{background:#137765;color:white;border-color:#137765;min-width:105px}input{flex:1;min-width:140px;height:44px;accent-color:#137765}#clock{min-width:80px;font:16px monospace}p{font-size:14px;color:#64737c;text-align:center;margin:20px}body.render main{margin:0;max-width:none}body.render nav,body.render p{display:none}</style></head><body><main><canvas id="scene" width="1600" height="560" aria-label="单行 token 补全循环，从锄禾开始补全日当午，汗滴禾下土。"></canvas></main><nav aria-label="播放控制"><button id="play">暂停</button><button id="replay">重新播放</button><input id="seek" type="range" min="0" max="3300" value="0" aria-label="动画进度"><span id="clock"></span></nav><p>建议横屏观看。动画播放到 EOS 后停止，可拖动回看。</p>
+<script>(function(root){
+ const PROMPT=Array.from('锄禾'),TAIL=Array.from('日当午，汗滴禾下土。');
+ const LEAD=1.2,STEP=2.6,DURATION=LEAD+(TAIL.length+1)*STEP+3.2;
+ function getState(seconds){
+  const t=Math.max(0,Math.min(DURATION,Number.isFinite(seconds)?seconds:0));
+  if(t<LEAD)return {tokens:PROMPT.slice(),phase:'ready',output:null,index:0,progress:0,halted:false};
+  const index=Math.min(TAIL.length,Math.floor((t-LEAD)/STEP));
+  const progress=Math.min(1,((t-LEAD)-index*STEP)/STEP);
+  if(index===TAIL.length){
+   const halted=progress>=.24;
+   return {tokens:PROMPT.concat(TAIL),phase:halted?'stopped':'predict',output:halted?'EOS':null,index,progress:halted?1:progress,halted};
+  }
+  const phase=progress<.24?'predict':progress<.43?'output':progress<.84?'returning':'appended';
+  const count=index+(phase==='appended'?1:0);
+  return {tokens:PROMPT.concat(TAIL.slice(0,count)),phase,output:phase==='predict'?null:TAIL[index],index,progress,halted:false};
+ }
+ const api={getState,LEAD,STEP,DURATION};
+ if(typeof module==='object'&&module.exports)module.exports=api;else root.CompletionModel=api;
+})(typeof window==='object'?window:globalThis);
+</script>
+<script>
+const cv=document.getElementById('scene'),ctx=cv.getContext('2d'),M=CompletionModel;
+const F='"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",sans-serif';
+const INK='#20313b',MUTED='#64737c',GREEN='#137765',RED='#a64238';
+function text(s,x,y,size=20,color=INK,align='left',weight=400){ctx.fillStyle=color;ctx.font=weight+' '+size+'px '+F;ctx.textAlign=align;ctx.textBaseline='middle';ctx.fillText(s,x,y);}
+function box(x,y,w,h,fill,stroke,width=1.5,r=10){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}
+function chip(s,x,y,w=54,h=80,fresh=true,strong=false){box(x,y,w,h,fresh?'#e6f5ef':'#edf1f3',fresh?GREEN:'#d6dfe3',strong?3:1.5);text(s,x+w/2,y+h/2,s==='EOS'?29:34,fresh?GREEN:INK,'center',500);}
+function arrow(points,color=MUTED,width=2.3){ctx.beginPath();ctx.moveTo(...points[0]);for(const p of points.slice(1))ctx.lineTo(...p);ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.stroke();const e=points.at(-1),a=points.at(-2),angle=Math.atan2(e[1]-a[1],e[0]-a[0]);ctx.beginPath();for(const sign of [-1,1]){ctx.moveTo(e[0]-11*Math.cos(angle+sign*.5),e[1]-11*Math.sin(angle+sign*.5));ctx.lineTo(...e);}ctx.stroke();}
+function pointOn(points,p){const lengths=points.slice(1).map((b,i)=>Math.hypot(b[0]-points[i][0],b[1]-points[i][1]));let d=lengths.reduce((a,b)=>a+b,0)*Math.max(0,Math.min(1,p));for(let i=0;i<lengths.length;i++){if(d<=lengths[i]||i===lengths.length-1){const f=d/lengths[i];return [points[i][0]+(points[i+1][0]-points[i][0])*f,points[i][1]+(points[i+1][1]-points[i][1])*f];}d-=lengths[i];}}
+window.renderFrame=function(t){
+ const s=M.getState(t),end=100+s.tokens.length*66+27;
+ ctx.clearRect(0,0,1600,560);ctx.fillStyle='#fafbf9';ctx.fillRect(0,0,1600,560);
+ text('Completion：从「锄禾」开始补全',96,74,34,INK,'left',650);
+ const message=s.phase==='ready'?'输入已有内容：「锄禾」':s.phase==='predict'?'预测下一个 token':s.phase==='output'?'输出「'+s.output+'」':s.phase==='returning'?'把「'+s.output+'」加入左侧序列末尾':s.phase==='appended'?'序列已更新，继续预测':'输出 EOS，补全结束';
+ text(message,96,130,22,s.halted?RED:GREEN);
+ text('输入 token 序列',100,204,21,MUTED);text('输出下一个 token',1432,204,21,MUTED,'center');
+ box(80,234,850,112,'#ffffff','#e2e8e5',1.2,12);
+ s.tokens.forEach((ch,i)=>chip(ch,100+i*66,250,54,80,i>=2,s.phase==='appended'&&i===s.tokens.length-1));
+ arrow([[950,290],[994,290]],s.phase==='predict'?GREEN:MUTED);
+ box(1020,245,180,90,'#ffffff',s.halted?'#bdc6c3':s.phase==='predict'?GREEN:'#8b9aa3',s.phase==='predict'?2.7:1.7,13);
+ text('LLM',1110,290,35,s.halted?MUTED:INK,'center',650);
+ arrow([[1226,290],[1344,290]],s.halted?'#bdc6c3':MUTED);
+ if(s.phase==='predict'){
+  const p=s.progress/.24;ctx.beginPath();ctx.arc(954+p*36,290,5,0,Math.PI*2);ctx.fillStyle=GREEN;ctx.fill();
+ }
+ // The empty output slot is a location, not a second copy of a flying/consumed token.
+ box(1370,250,124,80,'#ffffff',s.halted?RED:'#d6dfe3',s.halted?2.5:1.5);
+ if(s.phase==='output')chip(s.output,1370,250,124,80,true,true);
+ else if(s.phase==='stopped')text('EOS',1432,290,30,RED,'center',650);
+ else if(s.phase==='predict'||s.phase==='ready')text('…',1432,286,32,MUTED,'center');
+ if(!s.halted){
+  arrow([[1432,347],[1432,430],[end,430],[end,347]],s.phase==='returning'?GREEN:'#ccd8d2',s.phase==='returning'?2.8:2);
+  text('非 EOS：追加到末尾，再预测',970,484,19,s.phase==='returning'?GREEN:MUTED,'center');
+ }else{text('EOS → 停止，不再追加',1432,383,19,RED,'center');}
+ if(s.phase==='returning'){
+  const p=(s.progress-.43)/(.84-.43);
+  const xy=pointOn([[1432,290],[1432,430],[end,430],[end,290]],p);
+  chip(s.output,xy[0]-27,xy[1]-40,54,80,true,true);
+ }
+ text('教学示意：逐字/标点视作一个 token；补全序列预设，非实时模型推理。',96,524,16,'#89949a');
+ return s;
+};
+const renderMode=new URLSearchParams(location.search).has('render');if(renderMode)document.body.classList.add('render');
+let current=0,playing=!renderMode&&!matchMedia('(prefers-reduced-motion: reduce)').matches,last=0;
+const btn=document.getElementById('play'),seek=document.getElementById('seek'),clock=document.getElementById('clock');
+seek.max=Math.round(M.DURATION*100);
+function show(){renderFrame(current);seek.value=Math.round(current*100);clock.textContent=current.toFixed(1)+' / '+M.DURATION.toFixed(0)+'s';btn.textContent=playing?'暂停':current>=M.DURATION?'已结束':'播放';}
+function replay(){current=0;playing=true;last=performance.now();show();}
+btn.onclick=()=>{if(current>=M.DURATION)replay();else{playing=!playing;last=performance.now();show();}};
+document.getElementById('replay').onclick=replay;
+seek.oninput=()=>{current=Number(seek.value)/100;playing=false;show();};
+window.playerState=()=>({current,playing,model:M.getState(current)});
+window.seekTo=t=>{current=Math.max(0,Math.min(M.DURATION,t));playing=false;show();};
+function tick(now){if(playing){current=Math.min(M.DURATION,current+(now-last)/1000);if(current>=M.DURATION||M.getState(current).halted){current=M.DURATION;playing=false;}show();}last=now;requestAnimationFrame(tick);}
+window.ready=document.fonts.ready.then(()=>{show();last=performance.now();if(!renderMode)requestAnimationFrame(tick);return true;});
+</script></body></html>

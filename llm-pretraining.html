@@ -1,0 +1,85 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>预训练：用已知文本练习预测</title><style>*{box-sizing:border-box}body{margin:0;background:#fafbf9;color:#20313b;font-family:"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",sans-serif}main{max-width:1440px;margin:20px auto 0}canvas{display:block;width:100%;height:auto}nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap;max-width:1050px;margin:8px auto;padding:0 22px}button{min-height:44px;border:1px solid #b7c9c0;background:white;border-radius:8px;padding:8px 18px;font:inherit;cursor:pointer;color:#175d50}button:focus-visible,input:focus-visible{outline:3px solid #137765;outline-offset:3px}#play{background:#137765;color:white;border-color:#137765;min-width:105px}input{flex:1;min-width:140px;height:44px;accent-color:#137765}#clock{min-width:80px;font:16px monospace}p{font-size:14px;color:#64737c;text-align:center;padding:0 16px}body.render main{margin:0;max-width:none}body.render nav,body.render p{display:none}</style></head><body><main><canvas id="scene" width="1440" height="740" aria-label="预训练动图：输入前文，预测，对照文本中的正确答案，计算预测误差，微调模型参数"></canvas></main><nav aria-label="播放控制"><button id="play">暂停</button><button id="replay">重新播放</button><input id="seek" type="range" min="0" max="3200" value="0" aria-label="动画进度"><span id="clock"></span></nav><p>教学示意，非实际模型训练。可暂停、拖动或重新播放；手机建议横屏观看。</p><script>(function(root){
+ const TEXT='锄禾日当午，汗滴禾下土。';
+ const CASES=[{prefix:'锄禾',prediction:'山',target:'日'},{prefix:'锄禾日',prediction:'当',target:'当'},{prefix:'锄禾日当',prediction:'早',target:'午'}];
+ const LEAD=1.2,STEP=9,DURATION=LEAD+CASES.length*STEP+3.8;
+ function getState(seconds){
+  const t=Math.max(0,Math.min(DURATION,Number.isFinite(seconds)?seconds:0));
+  const finished=t>=LEAD+CASES.length*STEP;
+  const index=Math.max(0,Math.min(CASES.length-1,Math.floor((t-LEAD)/STEP)));
+  const progress=finished?1:Math.max(0,Math.min(1,(t-LEAD-index*STEP)/STEP));
+  const phase=t<LEAD?'ready':finished?'finished':progress<.18?'input':progress<.32?'predict':progress<.48?'reveal':progress<.64?'error':progress<.9?'update':'learned';
+  const order=['ready','input','predict','reveal','error','update','learned','finished'];const k=order.indexOf(phase);
+  return {...CASES[index],index,progress,phase,finished,predictionVisible:k>=2,targetVisible:k>=3,errorVisible:k>=4,updates:index+(k>=6?1:0)};
+ }
+ const api={TEXT,LEAD,STEP,DURATION,getState};if(typeof module==='object'&&module.exports)module.exports=api;else root.TrainingModel=api;
+})(typeof window==='object'?window:globalThis);
+</script><script>
+const cv=document.getElementById('scene'),ctx=cv.getContext('2d'),M=TrainingModel;
+const F='"Noto Sans CJK SC","Microsoft YaHei","PingFang SC",sans-serif';
+const INK='#20313b',MUTED='#64737c',GREEN='#137765',DIM='#d3dcd7';
+let clipped=[];
+function txt(s,x,y,size=20,color=INK,align='left',weight=400){
+ ctx.fillStyle=color;ctx.font=weight+' '+size+'px '+F;ctx.textAlign=align;ctx.textBaseline='middle';
+ const m=ctx.measureText(s);const left=align==='center'?x-m.width/2:align==='right'?x-m.width:x;
+ if(left<0||left+m.width>1440||y-m.actualBoundingBoxAscent<0||y+m.actualBoundingBoxDescent>740)clipped.push(s);
+ ctx.fillText(s,x,y);
+}
+function box(x,y,w,h,fill,stroke,width=1.5,r=10){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=width;ctx.stroke();}
+function line(points,color=MUTED,width=2.3,head=false){
+ ctx.beginPath();ctx.moveTo(...points[0]);for(const p of points.slice(1))ctx.lineTo(...p);ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=color;ctx.stroke();
+ if(head){const e=points.at(-1),a=points.at(-2),angle=Math.atan2(e[1]-a[1],e[0]-a[0]);ctx.beginPath();for(const sign of [-1,1]){ctx.moveTo(e[0]-11*Math.cos(angle+sign*.5),e[1]-11*Math.sin(angle+sign*.5));ctx.lineTo(...e);}ctx.stroke();}
+}
+function pointOn(points,p){const lengths=points.slice(1).map((b,i)=>Math.hypot(b[0]-points[i][0],b[1]-points[i][1]));let d=lengths.reduce((a,b)=>a+b,0)*Math.max(0,Math.min(1,p));for(let i=0;i<lengths.length;i++){if(d<=lengths[i]||i===lengths.length-1){const f=d/lengths[i];return [points[i][0]+(points[i+1][0]-points[i][0])*f,points[i][1]+(points[i+1][1]-points[i][1])*f];}d-=lengths[i];}}
+function dot(points,p,r=6){const [x,y]=pointOn(points,p);ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle=GREEN;ctx.fill();}
+window.renderFrame=function(t){
+ const s=M.getState(t),updating=s.phase==='update',learned=s.phase==='learned'||s.finished;
+ clipped=[];ctx.globalAlpha=1;ctx.clearRect(0,0,1440,740);ctx.fillStyle='#fafbf9';ctx.fillRect(0,0,1440,740);
+ txt('预训练：用已知文本，练习预测下一个 token',100,78,35,INK,'left',650);
+ txt('与补全不同：这里有正确答案，还会更新模型参数。',100,123,21,MUTED);
+ txt('训练文本',110,183,20,MUTED);
+ let x=242;Array.from(M.TEXT).forEach((c,i)=>{txt(c,x,183,29,i===s.prefix.length&&s.targetVisible?GREEN:INK,'left',i===s.prefix.length&&s.targetVisible?650:400);x+=ctx.measureText(c).width;});
+ const status=s.phase==='ready'?'准备：从训练文本取出前文和正确的下一个 token':s.phase==='input'?'读入前文「'+s.prefix+'」':s.phase==='predict'?'模型预测下一个 token（示意）':s.phase==='reveal'?'从原文取出正确答案「'+s.target+'」':s.phase==='error'?'根据正确答案的预测概率，计算误差':s.phase==='update'?(s.prediction===s.target?'预测正确，也继续按概率误差微调参数':'把误差信号传回模型，微调参数'):s.phase==='learned'?'参数已微调；下一位置仍使用原文中的正确前缀':'在大量文本中，反复用预测误差调整参数。';
+ txt(status,110,235,21,GREEN);
+ const sourcePath=[[625,173],[1220,173],[1220,240]];
+ line(sourcePath,s.targetVisible?MUTED:DIM,2.3,true);
+ if(s.phase==='reveal')dot(sourcePath,(s.progress-.32)/.16,5);
+ txt('输入前文',110,272,21,MUTED);
+ Array.from(s.prefix).forEach((ch,i)=>{box(110+i*72,300,60,80,'#edf1f3','#d6dfe3',1.5);txt(ch,140+i*72,340,32,INK,'center',500);});
+ const inputStart=110+(Array.from(s.prefix).length-1)*72+60+28;
+ line([[inputStart,340],[464,340]],s.phase==='input'?GREEN:MUTED,2.4,true);
+ if(s.phase==='input')dot([[inputStart,340],[464,340]],s.progress/.18,5);
+ box(490,290,210,110,learned?'#e6f5ef':'#fff',updating||learned?GREEN:'#8b9aa3',updating||learned?3:1.8,14);
+ txt('LLM',595,345,37,INK,'center',650);
+ line([[725,340],[890,340]],s.phase==='predict'?GREEN:MUTED,2.4,true);
+ if(s.phase==='predict')dot([[725,340],[890,340]],(s.progress-.18)/.14,5);
+ txt('模型预测（示意）',970,272,21,MUTED,'center');
+ box(920,300,100,80,'#fff',s.predictionVisible?'#8b9aa3':DIM,1.6);
+ txt(s.predictionVisible?s.prediction:'…',970,340,34,s.predictionVisible?INK:MUTED,'center',500);
+ txt('正确答案',1220,272,21,MUTED,'center');
+ box(1170,300,100,80,s.targetVisible?'#e6f5ef':'#fff',s.targetVisible?GREEN:DIM,s.targetVisible?2:1.5);
+ txt(s.targetVisible?s.target:'…',1220,340,34,s.targetVisible?GREEN:MUTED,'center',500);
+ const branches=[[[970,397],[970,437],[1095,437]],[[1220,397],[1220,437],[1095,437]]];
+ branches.forEach(points=>line(points,s.errorVisible?MUTED:DIM,2.2));
+ line([[1095,437],[1095,464]],s.errorVisible?MUTED:DIM,2.3,true);
+ if(s.phase==='error'){const p=(s.progress-.48)/.16;branches.forEach(points=>dot(points,p,5));}
+ txt('计算预测误差',1095,503,25,s.errorVisible?INK:'#a8b3ad','center');
+ const feedback=[[1095,526],[1095,603],[595,603],[595,425]];
+ line(feedback,updating||learned?GREEN:DIM,updating?3:2.5,true);
+ if(updating)dot(feedback,(s.progress-.64)/.26,7);
+ // Keep the update caption off the moving signal path so the pulse stays visible.
+ txt('根据误差，微调参数',858,578,25,updating||learned?GREEN:MUTED,'center',550);
+ txt('单个位置的教学展开；正确 token 的预测概率决定误差，并非只在猜错时学习。实际训练批量、并行处理多个位置。',100,687,15,'#89949a');
+ txt('逐字 token、预测与参数变化均为预设示意，未调用真实模型。',100,713,15,'#89949a');
+ window.frameDiagnostics={clipped_text:clipped.slice()};return s;
+};
+const renderMode=new URLSearchParams(location.search).has('render');if(renderMode)document.body.classList.add('render');
+let current=0,playing=!renderMode&&!matchMedia('(prefers-reduced-motion: reduce)').matches,last=0;
+const btn=document.getElementById('play'),seek=document.getElementById('seek'),clock=document.getElementById('clock');seek.max=Math.round(M.DURATION*100);
+function show(){renderFrame(current);seek.value=Math.round(current*100);clock.textContent=current.toFixed(1)+' / '+M.DURATION.toFixed(0)+'s';btn.textContent=playing?'暂停':current>=M.DURATION?'演示结束':'播放';}
+function replay(){current=0;playing=true;last=performance.now();show();}
+btn.onclick=()=>{if(current>=M.DURATION)replay();else{playing=!playing;last=performance.now();show();}};document.getElementById('replay').onclick=replay;
+seek.oninput=()=>{current=Number(seek.value)/100;playing=false;show();};
+window.playerState=()=>({current,playing,model:M.getState(current)});window.seekTo=t=>{current=Math.max(0,Math.min(M.DURATION,t));playing=false;show();};
+function tick(now){if(playing){current=Math.min(M.DURATION,current+(now-last)/1000);if(M.getState(current).finished){current=M.DURATION;playing=false;}show();}last=now;requestAnimationFrame(tick);}
+window.ready=document.fonts.ready.then(()=>{show();last=performance.now();if(!renderMode)requestAnimationFrame(tick);return true;});
+</script></body></html>

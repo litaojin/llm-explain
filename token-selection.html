@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>有了概率，下一个 token 就确定了吗？ · LLM Explain</title><style>*{box-sizing:border-box}body{margin:0;background:#fafbf9;color:#20313b;font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif}main{max-width:1440px;margin:auto}.canvas{width:100%;overflow:auto}svg{display:block;width:100%;height:auto;min-width:720px}button,select{font:inherit;min-height:44px;padding:8px 15px;border:1px solid #d5dfd7;border-radius:6px;background:#fff;color:#137765;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #326a91;outline-offset:3px}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 20px;border-top:1px solid #d5dfd7}#seek{flex:1;min-width:140px;min-height:44px;accent-color:#137765}.note{padding:0 20px;margin:5px 0 18px;color:#596b72;font-size:13px;line-height:1.7}.scroll-hint{display:none}@media(max-width:720px){.scroll-hint{display:block;padding:10px 20px;margin:0;font-size:13px;color:#596b72}.controls{gap:8px}.controls label{display:inline-flex;align-items:center;gap:5px;min-height:44px}#seek{flex-basis:100%}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}</style></head><body><main><p class="scroll-hint">小屏可左右滑动图解；下方控件可暂停、拖动与倍速回看。</p><div class="canvas" aria-label="有了概率，下一个 token 就确定了吗？"><svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="scene-title scene-desc">
+<title id="scene-title">有了概率，下一个 token 就确定了吗？</title><desc id="scene-desc">沿用上一课的同一分布；区分取最大值与按概率抽取。</desc>
+<defs><marker id="scene-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 2 L10 6 L2 10" fill="none" stroke="#82928b" stroke-width="1.8"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#20313b}.muted{fill:#64737c}.green{fill:#137765}.blue{fill:#326a91}.center{text-anchor:middle}.num{font-variant-numeric:tabular-nums}.wire{fill:none;stroke:#82928b;stroke-width:1.8;marker-end:url(#scene-arrow)}.box{fill:#f0f7f2;stroke:#cad6ce;stroke-width:1.5}</style>
+<rect width="1440" height="860" fill="#fafbf9"/>
+<text x="100" y="78" font-size="35" class="" id="heading" >有了概率，下一个 token 就确定了吗？</text><text x="100" y="124" font-size="22" class="muted" id="step" >沿用上一课的同一分布；区分取最大值与按概率抽取。</text>
+<rect x="100" y="170" width="1240" height="500" rx="13" fill="white" stroke="#cad6ce" stroke-width="1.5"/>
+<text x="170" y="230" font-size="23" class="muted" >同一分布，不会因为换一种选择规则而改变</text><g id="selection-method" opacity="0"><text x="170" y="282" font-size="24" class="" >规则一：贪心，只取最大概率</text><text x="810" y="282" font-size="25" class="green" id="greedy-value" ></text></g><rect id="interval-0" data-token="日" x="180.000000000000" y="350" width="695.427400679010" height="65" fill="#137765"/><text x="527.7137003395051" y="391" font-size="27" class="center" style="fill:white">日</text><rect id="interval-1" data-token="月" x="875.427400679010" y="350" width="255.833443537103" height="65" fill="#326a91"/><text x="1003.3441224475616" y="391" font-size="27" class="center" style="fill:white">月</text><rect id="interval-2" data-token="山" x="1131.260844216113" y="350" width="94.115864241395" height="65" fill="#7c9387"/><text x="1178.3187763368107" y="391" font-size="27" class="center" style="fill:white">山</text><rect id="interval-3" data-token="EOS" x="1225.376708457508" y="350" width="34.623291542492" height="65" fill="#58656e"/><path d="M1242.688354228754 342 V318" class="wire"/><text x="1243" y="306" font-size="19" class="center" >EOS 3.21%</text><text x="180" y="445" font-size="19" class="muted" >0</text><text x="1288" y="445" font-size="19" class="muted center" >1</text><g id="sampling" opacity="0"><text x="170" y="505" font-size="24" class="" >规则二：按概率区间抽取</text><text x="170" y="544" font-size="24" class="blue num" id="sample-value" ></text><g id="pointer"><path d="M0 425 L-9 444 L9 444 Z" fill="#20313b"/><path d="M0 444 V466" stroke="#20313b" stroke-width="2"/></g><text x="170" y="590" font-size="20" class="muted" >每次独立，分布固定：</text><text x="430" y="590" font-size="21" class="num" id="draw-0" ></text><text x="645" y="590" font-size="21" class="num" id="draw-1" ></text><text x="865" y="590" font-size="21" class="num" id="draw-2" ></text><text x="1080" y="590" font-size="21" class="num" id="draw-3" ></text><text x="170" y="632" font-size="21" class="green" id="loop-note" ></text></g><text x="527.714" y="336" font-size="19" class="muted num center" >日  64.39%</text><text x="1003.344" y="336" font-size="19" class="muted num center" >月  23.69%</text><text x="1178.319" y="336" font-size="19" class="muted num center" >山  8.71%</text>
+<text x="100" y="730" font-size="28" class="green" id="takeaway" ></text><text x="100" y="772" font-size="22" class="" id="explanation" ></text>
+<text x="100" y="810" font-size="16" class="muted" >区间与阈值使用全精度；显示百分比为舍入值。u = 0.10、0.70、0.95、0.99 是固定教学值，不是真随机输出。</text><text x="100" y="840" font-size="16" class="muted" >四次独立抽取不是同一句话的连续 token；真实循环中非 EOS 追加后重算分布，EOS 停止。温度 / top-k / top-p 留待后续。</text>
+</svg></div><div class="controls" aria-label="播放控制"><button id="play" type="button" aria-pressed="false">播放</button><button id="replay" type="button">重播</button><input id="seek" type="range" min="0" max="16" value="0" step="0.01" aria-label="动画时间"><span id="clock" aria-live="off">0 / 16 秒</span><label>倍速 <select id="speed" aria-label="播放速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div><p class="note">沿用上一课的同一分布；区分取最大值与按概率抽取。　单次播放后停止。<noscript>交互需启用 JavaScript；可打开同目录的 GIF 观看完整过程。</noscript></p></main><script>const LessonConfig={"id":"token-selection","title":"有了概率，下一个 token 就确定了吗？","width":1440,"height":860,"subtitle":"沿用上一课的同一分布；区分取最大值与按概率抽取。","duration":16,"caption":"沿用上一课的同一分布；区分取最大值与按概率抽取。","snapshots":[3,5,8,11,15]};</script><script>(function(root,factory){if(typeof module==='object'&&module.exports)module.exports=factory();else root.LessonModel=factory();})(typeof window!=='undefined'?window:globalThis,function(){
+'use strict';
+const DURATION=16;
+function stateAt(time){
+ const t=Number.isNaN(Number(time))?0:Math.max(0,Math.min(DURATION,Number(time)));
+ const vocab=['日','月','山','EOS'],h=[1,2],W=[[1,.5],[0,.5],[-1,.5],[-2,.5]],bias=[0,0,0,0];
+ const logits=W.map((r,i)=>r.reduce((sum,w,j)=>sum+w*h[j],bias[i]));
+ const maxLogit=Math.max(...logits),shifted=logits.map(z=>z-maxLogit),exponentials=shifted.map(Math.exp);
+ const denominator=exponentials.reduce((a,b)=>a+b,0),probabilities=exponentials.map(e=>e/denominator);
+ const cdf=probabilities.map((_,i)=>probabilities.slice(0,i+1).reduce((a,b)=>a+b,0));
+ const s={t,vocab,h,W,bias,logits,maxLogit,shifted,exponentials,denominator,probabilities,cdf,parametersUpdated:false,selectedToken:null};
+ s.greedy=vocab[probabilities.indexOf(Math.max(...probabilities))]; s.uniforms=[.10,.70,.95,.99];
+ s.outcomes=s.uniforms.map(u=>vocab[cdf.findIndex(c=>u<c)]); s.independentDraws=true; s.continuedSentence=false;
+ s.phase=t<2?'distribution':t<4?'greedy':'sampling'; s.drawIndex=t<4?-1:Math.min(3,Math.floor((t-4)/3));
+ s.u=s.drawIndex<0?null:s.uniforms[s.drawIndex];
+ const arrival=s.drawIndex<0?0:Math.max(0,Math.min(1,(t-(4+s.drawIndex*3))/.7));
+ const prior=s.drawIndex<=0?0:s.uniforms[s.drawIndex-1]; s.pointerU=s.drawIndex<0?0:prior+(s.u-prior)*arrival;
+ s.arrived=s.drawIndex>=0&&arrival===1; s.selectedToken=s.arrived?s.outcomes[s.drawIndex]:null;
+ s.stopIfRealLoop=s.selectedToken==='EOS'; s.completedDraws=s.drawIndex<0?0:s.drawIndex+(s.arrived?1:0);
+ return s;
+}
+return {DURATION,stateAt};
+});
+</script><script>function renderScene(s){
+ opacity('selection-method',s.t>=2?1:0);opacity('sampling',s.t>=4?1:0);
+ text('greedy-value','argmax p → '+s.greedy+'（64.39%）');
+ $('pointer').setAttribute('transform','translate('+(180+1080*s.pointerU)+' 0)');
+ $('pointer').setAttribute('data-u',s.pointerU);
+ text('sample-value',s.drawIndex<0?'':('固定 u = '+s.u.toFixed(2)+(s.arrived?' → '+s.selectedToken:'：指针移向对应区间…')));
+ for(let i=0;i<4;i++)text('draw-'+i,i<s.completedDraws?s.uniforms[i].toFixed(2)+' → '+s.outcomes[i]:'');
+ text('loop-note',s.stopIfRealLoop?'此例选中 EOS：若在真实生成循环中，此时停止。':'这是四次独立试验，不是把「日月山」接成一句话。');
+ text('step',s.t<2?'同一分布中，日最可能，但其他 token 也有机会。':s.t<4?'先看贪心：只拿最大概率对应的 token。':'再看抽取：固定 u 落入哪个概率区间，就选哪个 token。');
+ text('takeaway',s.t<2?'问题：概率最高，是否就一定会选中？':s.t<4?'贪心选择「日」；按概率抽取则允许其他候选。':'选择规则决定怎么用分布；概率最高，不等于每次必选。');
+ text('explanation',s.t<4?'上面的区间长度就是上一课的概率；选择规则不会修改这份分布。':'实际生成：非 EOS → 追加 token → 重新计算分布；EOS → 停止。');
+ return {...s};
+}
+</script><script>const svg=document.querySelector('svg'),$=id=>document.getElementById(id);
+function text(id,value){const e=$(id);if(!e)throw Error('Missing SVG label '+id);e.textContent=String(value)}
+function opacity(id,value){const e=$(id);if(!e)throw Error('Missing SVG group '+id);e.setAttribute('opacity',String(value))}
+let currentTime=0,playing=false,rate=1,raf=0,lastTick=0;
+function boundedTime(t){t=Number(t);return Number.isFinite(t)?Math.max(0,Math.min(LessonModel.DURATION,t)):0}
+function renderFrame(t){currentTime=boundedTime(t);const state=LessonModel.stateAt(currentTime),scene=renderScene(state);$('seek').value=currentTime;$('clock').textContent=currentTime.toFixed(1)+' / '+LessonModel.DURATION+' 秒';window.frameDiagnostics={time:currentTime,model:state,scene};return window.frameDiagnostics}
+function updateControls(){$('play').textContent=playing?'暂停':'播放';$('play').setAttribute('aria-pressed',String(playing))}
+function pause(){playing=false;cancelAnimationFrame(raf);updateControls()}
+function tick(now){if(!playing)return;const elapsed=Math.max(0,(now-lastTick)/1000);lastTick=now;renderFrame(currentTime+elapsed*rate);if(currentTime>=LessonModel.DURATION){pause();return}raf=requestAnimationFrame(tick)}
+function play(){if(currentTime>=LessonModel.DURATION)renderFrame(0);if(playing)return;playing=true;lastTick=performance.now();updateControls();raf=requestAnimationFrame(tick)}
+function seekTo(t){pause();return renderFrame(t)}
+function playerState(){return {playing,current:currentTime,speed:rate,duration:LessonModel.DURATION,stage:window.frameDiagnostics?.model?.stage}}
+function visibleTextBounds(){const r=svg.getBoundingClientRect();return [...svg.querySelectorAll('text')].filter(e=>{for(let n=e;n&&n!==svg.parentNode;n=n.parentElement){const c=getComputedStyle(n);if(c.display==='none'||c.visibility==='hidden'||Number(c.opacity)===0)return false}return !!e.textContent.trim()}).map(e=>{const b=e.getBBox(),m=e.getScreenCTM(),a=new DOMPoint(b.x,b.y).matrixTransform(m),z=new DOMPoint(b.x+b.width,b.y+b.height).matrixTransform(m);return {id:e.id,text:e.textContent,x:a.x-r.x,y:a.y-r.y,width:z.x-a.x,height:z.y-a.y,inside:a.x>=r.x-1&&a.y>=r.y-1&&z.x<=r.right+1&&z.y<=r.bottom+1}})}
+async function exportPNG(t){pause();renderFrame(t);await document.fonts.ready;const clone=svg.cloneNode(true);clone.setAttribute('xmlns','http://www.w3.org/2000/svg');clone.setAttribute('width',String(LessonConfig.width));clone.setAttribute('height',String(LessonConfig.height));const xml=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([xml],{type:'image/svg+xml;charset=utf-8'}));try{const image=new Image();await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=url});const canvas=document.createElement('canvas');canvas.width=LessonConfig.width;canvas.height=LessonConfig.height;const ctx=canvas.getContext('2d');ctx.fillStyle='#fafbf9';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/png')}finally{URL.revokeObjectURL(url)}}
+$('play').onclick=()=>playing?pause():play();$('replay').onclick=()=>{pause();renderFrame(0);play()};$('seek').addEventListener('input',e=>seekTo(e.target.value));$('speed').onchange=e=>{rate=Number(e.target.value)};svg.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();playing?pause():play()}if(e.code==='ArrowRight'){e.preventDefault();seekTo(currentTime+1)}if(e.code==='ArrowLeft'){e.preventDefault();seekTo(currentTime-1)}});document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
+const ready=(async()=>{await document.fonts.ready;renderFrame(0);updateControls();if(!new URLSearchParams(location.search).has('render')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)play();return true})();
+window.ready=ready;window.renderFrame=renderFrame;window.exportPNG=exportPNG;window.seekTo=seekTo;window.playerState=playerState;window.visibleTextBounds=visibleTextBounds;
+</script></body></html>

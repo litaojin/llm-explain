@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>相同的 Token，为什么词序还重要？ · LLM Explain</title><style>*{box-sizing:border-box}body{margin:0;background:#fafbf9;color:#20313b;font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif}main{max-width:1440px;margin:auto}.canvas{width:100%;overflow:auto}svg{display:block;width:100%;height:auto;min-width:720px}button,select{font:inherit;min-height:44px;padding:8px 15px;border:1px solid #d5dfd7;border-radius:6px;background:#fff;color:#137765;cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #326a91;outline-offset:3px}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 20px;border-top:1px solid #d5dfd7}#seek{flex:1;min-width:140px;min-height:44px;accent-color:#137765}.note{padding:0 20px;margin:5px 0 18px;color:#596b72;font-size:13px;line-height:1.7}.scroll-hint{display:none}@media(max-width:720px){.scroll-hint{display:block;padding:10px 20px;margin:0;font-size:13px;color:#596b72}.controls{gap:8px}.controls label{display:inline-flex;align-items:center;gap:5px;min-height:44px}#seek{flex-basis:100%}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}</style></head><body><main><p class="scroll-hint">小屏可左右滑动图解；下方控件可暂停、拖动与倍速回看。</p><div class="canvas" aria-label="相同的 Token，为什么词序还重要？"><svg xmlns="http://www.w3.org/2000/svg" width="1440" height="860" viewBox="0 0 1440 860" role="img" aria-labelledby="ps-title ps-desc">
+<title id="ps-title">相同的 Token，为什么词序还重要？</title>
+<desc id="ps-desc">两行始终保留我爱你与 你爱我。E我、E爱、E你表示固定参数下的初始嵌入。概念位置1、2、3与初始嵌入分开显示。我在句子A的第1位，在B的第3位。右侧为人类句义解读，不是模型预测。</desc>
+<defs><marker id="ps-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse"><path d="M2 2 L10 6 L2 10" fill="none" stroke="#137765" stroke-width="1.8"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK SC","WenQuanYi Zen Hei","Microsoft YaHei",sans-serif;fill:#20313b}.ps-center{text-anchor:middle;dominant-baseline:middle}.ps-muted{fill:#64737c}.ps-green{fill:#137765}.ps-blue{fill:#326a91}.ps-node{fill:#edf1f3;stroke:#d6dfe3;stroke-width:1.5}.ps-me{fill:#e6f5ef;stroke:#137765;stroke-width:2}.ps-tag{fill:#eff4f8;stroke:#bacdda}</style>
+<rect width="1440" height="860" fill="#fafbf9"/>
+<text x="100" y="78" font-size="35" font-weight="650">相同的 Token，为什么词序还重要？</text>
+<text id="ps-step" x="100" y="124" font-size="22" class="ps-muted">我爱你 / 你爱我：身份不变，顺序改变。</text>
+<rect x="100" y="170" width="1240" height="500" rx="13" fill="white" stroke="#cad6ce" stroke-width="1.5"/>
+<text x="128" y="210" font-size="19" class="ps-muted">固定参数下，E我 / E爱 / E你 各自代表同一 token 的初始嵌入；不画数值向量。</text>
+<text x="128" y="328" font-size="22" class="ps-muted">句子 A</text>
+<text x="128" y="367" font-size="21">我爱你</text>
+<text x="128" y="530" font-size="22" class="ps-muted">句子 B</text>
+<text x="128" y="569" font-size="21">你爱我</text>
+<g id="ps-positions">
+<g><rect x="320" y="233" width="120" height="37" rx="8" class="ps-tag"/><text id="ps-pos-a0" x="380" y="252" font-size="19" class="ps-center ps-blue">位置 1</text></g>
+<g><rect x="550" y="233" width="120" height="37" rx="8" class="ps-tag"/><text id="ps-pos-a1" x="610" y="252" font-size="19" class="ps-center ps-blue">位置 2</text></g>
+<g><rect x="780" y="233" width="120" height="37" rx="8" class="ps-tag"/><text id="ps-pos-a2" x="840" y="252" font-size="19" class="ps-center ps-blue">位置 3</text></g>
+<g><rect x="320" y="435" width="120" height="37" rx="8" class="ps-tag"/><text id="ps-pos-b0" x="380" y="454" font-size="19" class="ps-center ps-blue">位置 1</text></g>
+<g><rect x="550" y="435" width="120" height="37" rx="8" class="ps-tag"/><text id="ps-pos-b1" x="610" y="454" font-size="19" class="ps-center ps-blue">位置 2</text></g>
+<g><rect x="780" y="435" width="120" height="37" rx="8" class="ps-tag"/><text id="ps-pos-b2" x="840" y="454" font-size="19" class="ps-center ps-blue">位置 3</text></g>
+</g>
+<rect x="305" y="285" width="150" height="103" rx="12" class="ps-me"/>
+<text id="ps-token-a0" x="380" y="323" font-size="36" class="ps-center ps-green">我</text><text id="ps-embedding-a0" x="380" y="366" font-size="22" class="ps-center ps-green">E我</text>
+<rect x="535" y="285" width="150" height="103" rx="12" class="ps-node"/>
+<text id="ps-token-a1" x="610" y="323" font-size="36" class="ps-center">爱</text><text id="ps-embedding-a1" x="610" y="366" font-size="22" class="ps-center ps-muted">E爱</text>
+<rect x="765" y="285" width="150" height="103" rx="12" class="ps-node"/>
+<text id="ps-token-a2" x="840" y="323" font-size="36" class="ps-center">你</text><text id="ps-embedding-a2" x="840" y="366" font-size="22" class="ps-center ps-muted">E你</text>
+<rect x="305" y="487" width="150" height="103" rx="12" class="ps-node"/>
+<text id="ps-token-b0" x="380" y="525" font-size="36" class="ps-center">你</text><text id="ps-embedding-b0" x="380" y="568" font-size="22" class="ps-center ps-muted">E你</text>
+<rect x="535" y="487" width="150" height="103" rx="12" class="ps-node"/>
+<text id="ps-token-b1" x="610" y="525" font-size="36" class="ps-center">爱</text><text id="ps-embedding-b1" x="610" y="568" font-size="22" class="ps-center ps-muted">E爱</text>
+<rect x="765" y="487" width="150" height="103" rx="12" class="ps-me"/>
+<text id="ps-token-b2" x="840" y="525" font-size="36" class="ps-center ps-green">我</text><text id="ps-embedding-b2" x="840" y="568" font-size="22" class="ps-center ps-green">E我</text>
+<g id="ps-identity"><text x="1020" y="252" font-size="20" class="ps-green">初始嵌入未变</text><text x="1020" y="289" font-size="23" class="ps-green">A 的 E我 = B 的 E我</text></g>
+<g id="ps-trail"><path id="ps-trail-path" d="M380 394 C380 426 840 390 840 429" fill="none" stroke="#137765" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#ps-arrow)"/><circle id="ps-signal" cx="380" cy="394" r="6" fill="#137765"/></g>
+<g id="ps-roles"><text x="1020" y="327" font-size="19" class="ps-muted">人类句义解读（非预测）</text><text id="ps-role-a" x="1020" y="364" font-size="22">我 → 爱 → 你</text><text x="1020" y="400" font-size="18" class="ps-muted">表达者 → 动作 → 对象</text><text id="ps-role-b" x="1020" y="553" font-size="22">你 → 爱 → 我</text><text x="1020" y="589" font-size="18" class="ps-muted">表达者 → 动作 → 对象</text></g>
+<text id="ps-position-note" x="310" y="634" font-size="22" class="ps-blue">“我”：A 第 1 位 → B 第 3 位；位置标签跟随序列槽位。</text>
+<text id="ps-takeaway" x="100" y="730" font-size="27" class="ps-green">嵌入查表保留 token 身份；位置信息帮助模型利用词序。</text>
+<text id="ps-summary" x="100" y="774" font-size="22">只查嵌入表，不会自动给“我”附上表达者或对象的句子角色。</text>
+<text x="100" y="810" font-size="17" class="ps-muted">按字切分仅为示意。位置 1/2/3 是概念标签，不是 token ID、向量坐标或真实位置编码数值。</text>
+<text x="100" y="840" font-size="17" class="ps-muted">不声称所有 LLM 都把位置向量加到嵌入上：RoPE 可作用于注意力匹配。本图不模拟模型预测。</text>
+</svg>
+</div><div class="controls" aria-label="播放控制"><button id="play" type="button" aria-pressed="false">播放</button><button id="replay" type="button">重播</button><input id="seek" type="range" min="0" max="16" value="0" step="0.01" aria-label="动画时间"><span id="clock" aria-live="off">0 / 16 秒</span><label>倍速 <select id="speed" aria-label="播放速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label></div><p class="note">E我、E爱、E你是固定初始嵌入的符号。概念位置标签帮助解释词序，不是真实位置编码或模型预测。　单次播放后停止。<noscript>交互需启用 JavaScript；可打开同目录的 GIF 观看完整过程。</noscript></p></main><script>const LessonConfig={"id":"position-information","title":"相同的 Token，为什么词序还重要？","width":1440,"height":860,"subtitle":"我爱你 / 你爱我：token 身份不变，序列位置与句义不同。","duration":16,"caption":"E我、E爱、E你是固定初始嵌入的符号。概念位置标签帮助解释词序，不是真实位置编码或模型预测。","snapshots":[1,4,7,11,14]};</script><script>(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.LessonModel = factory();
+})(typeof window !== 'undefined' ? window : globalThis, function () {
+  'use strict';
+  const DURATION = 16;
+  function stateAt(t) {
+    const number = Number(t);
+    const time = Math.max(0,Math.min(DURATION,Number.isNaN(number)?0:number));
+    const stage = time < 3 ? 'compare' : time < 6 ? 'lookup' : time < 9 ? 'positions' : time < 12 ? 'roles' : 'summary';
+    const tokensA=['我','爱','你'], tokensB=['你','爱','我'];
+    const sentences=[tokensA,tokensB].map((tokens,i)=>({label:i?'B':'A',tokens,embeddings:tokens.map(token=>'E'+token),positions:[1,2,3],roles:{subject:tokens[0],verb:tokens[1],object:tokens[2]}}));
+    const messages={compare:'① 两句话包含相同的 token；先看它们的排列。',lookup:'② 同一 token 查同一行初始嵌入；E我 在两句中不变。',positions:'③ 加上概念位置标签：同一个“我”，从第 1 位到第 3 位。',roles:'④ 对照人类读出的句义：表达爱意的人和对象换了。',summary:'⑤ 身份相同，位置不同；只查嵌入表还不能附上句子角色。'};
+    return {time,stage,sentences,sameTokenInventory:true,sameSequence:false,message:messages[stage],
+      positionOpacity:time>=6?1:0,roleOpacity:time>=9?1:0,
+      trailOpacity:time>=6?1:0,embeddingHighlight:time>=3,
+      trailProgress:Math.max(0,Math.min(1,(time-6)/2)),summary:time>=12,
+      takeaway:time>=12?'嵌入查表保留 token 身份；位置信息帮助模型利用词序。':'“我”仍是“我”；它在句子中的位置却可以改变。'};
+  }
+  return {DURATION,stateAt};
+});
+</script><script>'use strict';
+function renderScene(s) {
+  text('ps-step',s.message); text('ps-takeaway',s.takeaway);
+  text('ps-summary',s.summary?'只查嵌入表，不会自动给“我”附上表达者或对象的句子角色。':'');
+  opacity('ps-positions',s.positionOpacity); opacity('ps-position-note',s.positionOpacity);
+  opacity('ps-roles',s.roleOpacity); opacity('ps-identity',s.embeddingHighlight?1:0); opacity('ps-trail',s.trailOpacity);
+  for (let psRow=0;psRow<2;psRow++) {
+    const psLabel=psRow?'b':'a',psSentence=s.sentences[psRow];
+    for (let psI=0;psI<3;psI++) {
+      text('ps-token-'+psLabel+psI,psSentence.tokens[psI]);
+      text('ps-embedding-'+psLabel+psI,psSentence.embeddings[psI]);
+      text('ps-pos-'+psLabel+psI,'位置 '+psSentence.positions[psI]);
+    }
+    text('ps-role-'+psLabel,psSentence.roles.subject+' → '+psSentence.roles.verb+' → '+psSentence.roles.object);
+  }
+  const psPath=$('ps-trail-path'),psPoint=psPath.getPointAtLength(psPath.getTotalLength()*s.trailProgress);
+  $('ps-signal').setAttribute('cx',psPoint.x); $('ps-signal').setAttribute('cy',psPoint.y);
+  opacity('ps-signal',s.time>=6&&s.time<8?1:0);
+  return {stage:s.stage,time:s.time,positionsVisible:s.positionOpacity===1,rolesVisible:s.roleOpacity===1,embeddings:s.sentences.map(psSentence=>psSentence.embeddings.slice()),sentences:s.sentences.map(psSentence=>psSentence.tokens.join('')),sameTokenInventory:s.sameTokenInventory,sameSequence:s.sameSequence,summary:s.summary};
+}
+</script><script>const svg=document.querySelector('svg'),$=id=>document.getElementById(id);
+function text(id,value){const e=$(id);if(!e)throw Error('Missing SVG label '+id);e.textContent=String(value)}
+function opacity(id,value){const e=$(id);if(!e)throw Error('Missing SVG group '+id);e.setAttribute('opacity',String(value))}
+let currentTime=0,playing=false,rate=1,raf=0,lastTick=0;
+function boundedTime(t){t=Number(t);return Number.isFinite(t)?Math.max(0,Math.min(LessonModel.DURATION,t)):0}
+function renderFrame(t){currentTime=boundedTime(t);const state=LessonModel.stateAt(currentTime),scene=renderScene(state);$('seek').value=currentTime;$('clock').textContent=currentTime.toFixed(1)+' / '+LessonModel.DURATION+' 秒';window.frameDiagnostics={time:currentTime,model:state,scene};return window.frameDiagnostics}
+function updateControls(){$('play').textContent=playing?'暂停':'播放';$('play').setAttribute('aria-pressed',String(playing))}
+function pause(){playing=false;cancelAnimationFrame(raf);updateControls()}
+function tick(now){if(!playing)return;const elapsed=Math.max(0,(now-lastTick)/1000);lastTick=now;renderFrame(currentTime+elapsed*rate);if(currentTime>=LessonModel.DURATION){pause();return}raf=requestAnimationFrame(tick)}
+function play(){if(currentTime>=LessonModel.DURATION)renderFrame(0);if(playing)return;playing=true;lastTick=performance.now();updateControls();raf=requestAnimationFrame(tick)}
+function seekTo(t){pause();return renderFrame(t)}
+function playerState(){return {playing,current:currentTime,speed:rate,duration:LessonModel.DURATION,stage:window.frameDiagnostics?.model?.stage}}
+function visibleTextBounds(){const r=svg.getBoundingClientRect();return [...svg.querySelectorAll('text')].filter(e=>{for(let n=e;n&&n!==svg.parentNode;n=n.parentElement){const c=getComputedStyle(n);if(c.display==='none'||c.visibility==='hidden'||Number(c.opacity)===0)return false}return !!e.textContent.trim()}).map(e=>{const b=e.getBBox(),m=e.getScreenCTM(),a=new DOMPoint(b.x,b.y).matrixTransform(m),z=new DOMPoint(b.x+b.width,b.y+b.height).matrixTransform(m);return {id:e.id,text:e.textContent,x:a.x-r.x,y:a.y-r.y,width:z.x-a.x,height:z.y-a.y,inside:a.x>=r.x-1&&a.y>=r.y-1&&z.x<=r.right+1&&z.y<=r.bottom+1}})}
+async function exportPNG(t){pause();renderFrame(t);await document.fonts.ready;const clone=svg.cloneNode(true);clone.setAttribute('xmlns','http://www.w3.org/2000/svg');clone.setAttribute('width',String(LessonConfig.width));clone.setAttribute('height',String(LessonConfig.height));const xml=new XMLSerializer().serializeToString(clone),url=URL.createObjectURL(new Blob([xml],{type:'image/svg+xml;charset=utf-8'}));try{const image=new Image();await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=url});const canvas=document.createElement('canvas');canvas.width=LessonConfig.width;canvas.height=LessonConfig.height;const ctx=canvas.getContext('2d');ctx.fillStyle='#fafbf9';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0,canvas.width,canvas.height);return canvas.toDataURL('image/png')}finally{URL.revokeObjectURL(url)}}
+$('play').onclick=()=>playing?pause():play();$('replay').onclick=()=>{pause();renderFrame(0);play()};$('seek').addEventListener('input',e=>seekTo(e.target.value));$('speed').onchange=e=>{rate=Number(e.target.value)};svg.addEventListener('keydown',e=>{if(e.code==='Space'){e.preventDefault();playing?pause():play()}if(e.code==='ArrowRight'){e.preventDefault();seekTo(currentTime+1)}if(e.code==='ArrowLeft'){e.preventDefault();seekTo(currentTime-1)}});document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
+const ready=(async()=>{await document.fonts.ready;renderFrame(0);updateControls();if(!new URLSearchParams(location.search).has('render')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)play();return true})();
+window.ready=ready;window.renderFrame=renderFrame;window.exportPNG=exportPNG;window.seekTo=seekTo;window.playerState=playerState;window.visibleTextBounds=visibleTextBounds;
+</script></body></html>

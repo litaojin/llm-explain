@@ -1,0 +1,87 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Attention：按权重汇集信息</title><style>*{box-sizing:border-box}body{margin:0;background:#fafbf9;color:#20313b;font-family:"Noto Sans CJK SC","Microsoft YaHei",sans-serif}main{max-width:1440px;margin:12px auto 0}svg{display:block;width:100%;height:auto}nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap;max-width:1050px;margin:8px auto;padding:0 22px}button,select{min-height:44px;border:1px solid #b7c9c0;background:white;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer;color:#175d50}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #137765;outline-offset:3px}#play{background:#137765;color:white;border-color:#137765;min-width:105px}input{flex:1;min-width:140px;height:44px;accent-color:#137765}#clock{min-width:80px;font:16px monospace}p{font-size:14px;color:#64737c;text-align:center;padding:0 16px}body.render main{margin:0;max-width:none}body.render nav,body.render p{display:none}</style></head><body><main><svg xmlns="http://www.w3.org/2000/svg" width="1440" height="820" viewBox="0 0 1440 820" role="img" aria-labelledby="title desc">
+<title id="title">Attention：当前 token 按权重汇集上下文信息</title>
+<desc id="desc">两行对照盛开的花与这钱随便花。末尾的花位于相同视觉位置，从已经出现的左侧上下文汇集向量信息；较粗的开与钱连线仅为教学构图，不是模型实测权重。汇集的信息参与更新花的表示，分别示意花朵与花费用法。箭头表示信息汇入方向，不是查询发出方向。为简化省略自身连接和 Transformer 的其余计算。</desc>
+<defs>
+<marker id="greenArrow" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M2 2 L12 7 L2 12" fill="none" stroke="#137765" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+<marker id="blueArrow" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M2 2 L12 7 L2 12" fill="none" stroke="#58778e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></marker>
+<marker id="grayArrow" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M2 2 L12 7 L2 12" fill="none" stroke="#82928b" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs>
+<style>text{font-family:"Noto Sans CJK SC","WenQuanYi Zen Hei","Microsoft YaHei",sans-serif;fill:#20313b}.center{text-anchor:middle;dominant-baseline:middle}.muted{fill:#64737c}.note{fill:#89949a}.token{fill:#fff;stroke:#cad6ce;stroke-width:1.5}.attention{fill:none;stroke-linecap:round;stroke-linejoin:round}.a{stroke:#137765;marker-end:url(#greenArrow)}.b{stroke:#58778e;marker-end:url(#blueArrow)}</style>
+<rect width="1440" height="820" fill="#fafbf9"/>
+<text x="100" y="78" font-size="35" font-weight="650">Attention：当前 token 如何汇集上下文信息？</text>
+<text x="100" y="124" class="muted" font-size="21">同一个“花”，从不同上下文按权重汇集信息，参与形成不同的表示。</text>
+<rect x="100" y="170" width="1240" height="465" rx="15" fill="#fff" stroke="#cad6ce" stroke-width="1.5"/>
+<text x="490" y="195" class="center muted" font-size="17">已出现的上下文</text>
+<text x="850" y="195" class="center muted" font-size="17">当前关注的位置</text>
+<text x="1180" y="195" class="center muted" font-size="17">结合信息后的表示</text>
+<path d="M130 425 H1310" stroke="#e3e9e4" stroke-width="1.2"/>
+<text x="130" y="288" class="note" font-size="17">例一</text>
+<path class="attention a" data-source="盛" data-target="花" d="M350 303 C350 203 850 203 850 303" stroke-width="2.4" opacity=".65"/>
+<path class="attention a" data-source="开" data-target="花" d="M490 303 C490 230 850 230 850 303" stroke-width="6"/>
+<path class="attention a" data-source="的" data-target="花" d="M630 303 C630 257 850 257 850 303" stroke-width="1.3" opacity=".5"/>
+<rect x="316" y="303" width="68" height="64" rx="10" class="token"/>
+<rect x="456" y="303" width="68" height="64" rx="10" fill="#edf7f2" stroke="#137765" stroke-width="1.8"/>
+<rect x="596" y="303" width="68" height="64" rx="10" class="token"/>
+<rect x="808" y="303" width="84" height="64" rx="11" fill="#fff" stroke="#137765" stroke-width="2.4"/>
+<text x="350" y="335" class="center" font-size="32">盛</text>
+<text x="490" y="335" class="center" font-size="32" style="fill:#137765">开</text>
+<text x="630" y="335" class="center" font-size="32">的</text>
+<text x="850" y="335" class="center" font-size="36" font-weight="600" style="fill:#137765">花</text>
+<text x="490" y="395" class="center muted" font-size="17">各位置携带的向量信息</text>
+<text x="850" y="395" class="center muted" font-size="17">当前位置的表示</text>
+<path d="M904 335 H1156" fill="none" stroke="#82928b" stroke-width="1.8" marker-end="url(#grayArrow)"/>
+<text x="1030" y="306" class="center muted" font-size="17">结合汇集的信息</text>
+<circle cx="1180" cy="335" r="11" fill="#137765"/>
+<text x="1180" y="290" class="center" font-size="22" style="fill:#137765">h花(A)</text>
+<text x="1180" y="382" class="center" font-size="24" style="fill:#137765">花朵用法</text>
+<text x="130" y="508" class="note" font-size="17">例二</text>
+<path class="attention b" data-source="这" data-target="花" d="M210 523 C210 403 850 403 850 523" stroke-width="1.3" opacity=".5"/>
+<path class="attention b" data-source="钱" data-target="花" d="M350 523 C350 423 850 423 850 523" stroke-width="6"/>
+<path class="attention b" data-source="随" data-target="花" d="M490 523 C490 443 850 443 850 523" stroke-width="2.4" opacity=".65"/>
+<path class="attention b" data-source="便" data-target="花" d="M630 523 C630 463 850 463 850 523" stroke-width="2.4" opacity=".65"/>
+<rect x="176" y="523" width="68" height="64" rx="10" class="token"/>
+<rect x="316" y="523" width="68" height="64" rx="10" fill="#eef3f7" stroke="#58778e" stroke-width="1.8"/>
+<rect x="456" y="523" width="68" height="64" rx="10" class="token"/>
+<rect x="596" y="523" width="68" height="64" rx="10" class="token"/>
+<rect x="808" y="523" width="84" height="64" rx="11" fill="#fff" stroke="#58778e" stroke-width="2.4"/>
+<text x="210" y="555" class="center" font-size="32">这</text>
+<text x="350" y="555" class="center" font-size="32" style="fill:#58778e">钱</text>
+<text x="490" y="555" class="center" font-size="32">随</text>
+<text x="630" y="555" class="center" font-size="32">便</text>
+<text x="850" y="555" class="center" font-size="36" font-weight="600" style="fill:#58778e">花</text>
+<text x="490" y="615" class="center muted" font-size="17">各位置携带的向量信息</text>
+<text x="850" y="615" class="center muted" font-size="17">当前位置的表示</text>
+<path d="M904 555 H1156" fill="none" stroke="#82928b" stroke-width="1.8" marker-end="url(#grayArrow)"/>
+<text x="1030" y="526" class="center muted" font-size="17">结合汇集的信息</text>
+<circle cx="1180" cy="555" r="11" fill="#58778e"/>
+<text x="1180" y="510" class="center" font-size="22" style="fill:#58778e">h花(B)</text>
+<text x="1180" y="602" class="center" font-size="24" style="fill:#58778e">花费用法</text>
+<path d="M130 665 H180" fill="none" stroke="#137765" stroke-width="1.5" marker-end="url(#greenArrow)"/>
+<path d="M210 665 H260" fill="none" stroke="#137765" stroke-width="6" marker-end="url(#greenArrow)"/>
+<text x="280" y="671" class="muted" font-size="18">线越粗，本次汇入的份额越大</text>
+<text x="100" y="718" font-size="24" style="fill:#137765">Attention 按权重汇集信息，参与形成当前 token 的上下文表示。</text>
+<text x="100" y="765" class="note" font-size="16">传递的是向量信息，不是字符；线宽是人为示意，不是模型实测权重，也不等同于词的固定重要性。</text>
+<text x="100" y="795" class="note" font-size="16">只画“花”可见的左侧上下文；自身连接、Q/K/V 与其余层省略。Attention 只是表示更新的一步，切分为示意。</text>
+</svg>
+</main><nav aria-label="播放控制"><button id="play">暂停</button><button id="replay">重新播放</button><input id="seek" type="range" min="0" max="1200" value="0" aria-label="动画进度"><select id="speed" aria-label="播放速度"><option value=".75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select><span id="clock"></span></nav><p>连线与信号表示向量信息流；切分及注意力权重均为教学示意，并非真实模型输出。可暂停、拖动、重播和调速；手机建议横屏。</p><script>(function(root){const DURATION=12,clamp=p=>Math.max(0,Math.min(1,p));function getState(seconds){const t=Math.max(0,Math.min(DURATION,Number.isFinite(seconds)?seconds:0));return {stage:t<1?'initial':t<3.5?'gatherA':t<4.5?'updateA':t<5.5?'holdA':t<8?'gatherB':t<9?'updateB':'compare',aGather:clamp((t-1)/2.5),aUpdate:clamp(t-3.5),bGather:clamp((t-5.5)/2.5),bUpdate:clamp(t-8),completedOutputs:Number(t>=4.5)+Number(t>=9),finished:t>=DURATION,charactersMove:false,parametersUpdated:false};}const api={DURATION,getState};if(typeof module==='object'&&module.exports)module.exports=api;else root.AttentionModel=api;})(typeof window==='object'?window:globalThis);
+</script><script>const M=AttentionModel,svg=document.querySelector('svg'),NS='http://www.w3.org/2000/svg';const text=s=>[...svg.querySelectorAll('text')].find(e=>e.textContent===s);
+const paths=[...svg.querySelectorAll('path.attention')],widths=paths.map(e=>Number(e.getAttribute('stroke-width'))),baseOpacity=paths.map(e=>Number(e.getAttribute('opacity')||1));
+function signal(color,r){const el=document.createElementNS(NS,'circle');el.setAttribute('r',r);el.setAttribute('fill',color);svg.appendChild(el);return el;}
+const pulses=paths.map((p,i)=>signal(i<3?'#137765':'#58778e',2+widths[i]*.6)),outPulses=['#137765','#58778e'].map(c=>signal(c,6));
+const outputPaths=[svg.querySelector('path[d="M904 335 H1156"]'),svg.querySelector('path[d="M904 555 H1156"]')];
+const outputGroups=[[svg.querySelector('circle[cx="1180"][cy="335"]'),text('h花(A)'),text('花朵用法')],[svg.querySelector('circle[cx="1180"][cy="555"]'),text('h花(B)'),text('花费用法')]];
+const caption=text('Attention 按权重汇集信息，参与形成当前 token 的上下文表示。');
+const captions={initial:'观察“花”这个位置：它会怎样汇集左侧上下文的信息？',gatherA:'“盛开的花”：各位置的信息按示意权重汇入“花”，不是把字符搬过去。',updateA:'汇集的信息参与更新“花”的表示，得到偏向花朵用法的表示。',holdA:'保留第一种结果，再看不同上下文如何汇入不同信息。',gatherB:'“这钱随便花”：换一组上下文，按新的示意权重汇集信息。',updateB:'结合汇集的信息，形成偏向花费用法的表示。',compare:'同一个“花”，汇集的上下文信息不同，形成的表示也不同。'};
+window.renderFrame=function(t){const s=M.getState(t),pulsePoints=[];
+ paths.forEach((path,i)=>{const first=i<3,p=first?s.aGather:s.bGather,active=first?s.stage==='gatherA':s.stage==='gatherB',started=first?t>=1:t>=5.5;path.style.opacity=String(baseOpacity[i]*(started?1:.1));const pos=path.getPointAtLength(path.getTotalLength()*p);pulses[i].setAttribute('cx',pos.x);pulses[i].setAttribute('cy',pos.y);pulses[i].style.display=active?'':'none';pulsePoints.push({source:path.dataset.source,target:path.dataset.target,position:[pos.x,pos.y],visible:active,radius:Number(pulses[i].getAttribute('r'))});});
+ outputPaths.forEach((path,i)=>{const p=i===0?s.aUpdate:s.bUpdate,length=path.getTotalLength(),active=i===0?s.stage==='updateA':s.stage==='updateB';path.style.opacity=p>0?'1':'.08';path.style.strokeDasharray=length+' '+length;path.style.strokeDashoffset=String(length*(1-p));path.style.markerEnd=p>=1?'url(#grayArrow)':'none';const y=i===0?335:555;outPulses[i].setAttribute('cx',904+(1180-904)*p);outPulses[i].setAttribute('cy',y);outPulses[i].style.display=active?'':'none';outputGroups[i].forEach(el=>el.style.opacity=p>=1?'1':'0');});
+ caption.textContent=captions[s.stage];
+ const rect=svg.getBoundingClientRect(),clipped=[...svg.querySelectorAll('text')].filter(e=>{const b=e.getBBox(),m=e.getScreenCTM();return [[b.x,b.y],[b.x+b.width,b.y],[b.x,b.y+b.height],[b.x+b.width,b.y+b.height]].some(([x,y])=>{const p=new DOMPoint(x,y).matrixTransform(m);return p.x<rect.left-.1||p.x>rect.right+.1||p.y<rect.top-.1||p.y>rect.bottom+.1})}).map(e=>e.textContent);
+ window.frameDiagnostics={clipped_text:clipped,tokenPositions:[...svg.querySelectorAll('text[font-size="32"],text[font-size="36"]')].map(e=>[e.textContent,Number(e.getAttribute('x')),Number(e.getAttribute('y'))]),pulsePoints,completedOutputs:s.completedOutputs,weightsAreIllustrative:true,parametersUpdated:false,visibleOutputGroups:outputGroups.map(g=>g.every(el=>el.style.opacity==='1'))};return s;
+};
+window.exportPNG=async t=>{renderFrame(t);if(frameDiagnostics.clipped_text.length)throw Error(JSON.stringify(frameDiagnostics));const img=new Image();img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(svg));await img.decode();const c=document.createElement('canvas');c.width=1440;c.height=820;c.getContext('2d').drawImage(img,0,0);return c.toDataURL('image/png').split(',')[1];};
+const renderMode=new URLSearchParams(location.search).has('render');if(renderMode)document.body.classList.add('render');let current=0,playing=!renderMode&&!matchMedia('(prefers-reduced-motion: reduce)').matches,last=0;
+const btn=document.getElementById('play'),seek=document.getElementById('seek'),clock=document.getElementById('clock');function show(){renderFrame(current);seek.value=Math.round(current*100);clock.textContent=current.toFixed(1)+' / '+M.DURATION+'s';btn.textContent=playing?'暂停':current>=M.DURATION?'演示结束':'播放';}function replay(){current=0;playing=true;last=performance.now();show();}
+btn.onclick=()=>{if(current>=M.DURATION)replay();else{playing=!playing;last=performance.now();show();}};document.getElementById('replay').onclick=replay;seek.oninput=()=>{current=Number(seek.value)/100;playing=false;show();};window.playerState=()=>({current,playing,model:M.getState(current)});window.seekTo=t=>{current=Math.max(0,Math.min(M.DURATION,t));playing=false;show();};
+function tick(now){if(playing){current=Math.min(M.DURATION,current+(now-last)/1000*Number(document.getElementById('speed').value));if(current>=M.DURATION)playing=false;show();}last=now;requestAnimationFrame(tick);}window.ready=document.fonts.ready.then(()=>{show();last=performance.now();if(!renderMode)requestAnimationFrame(tick);return true;});
+</script></body></html>
